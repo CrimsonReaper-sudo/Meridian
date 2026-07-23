@@ -1,0 +1,248 @@
+# Meridian
+
+*A macOS scheduling and productivity app, built as a single 10,000-line SwiftUI file.*
+
+---
+
+## What Meridian Is
+
+Meridian is a desktop scheduling app for macOS — built specifically for students, but useful for anyone whose week mixes recurring routines with one-off events. It lives somewhere between a calendar, a planner, a Pomodoro timer, a reminders app, a sleep tracker, and an AI assistant. Rather than asking the user to bounce between five different tools, Meridian folds all of that into one tightly integrated workspace, where the AI can read everything, edit anything, and coordinate the whole system on the user's behalf.
+
+At its heart, Meridian is built around a simple idea: a person's week has *patterns* (the recurring stuff — class, gym, study blocks) and a person's life has *exceptions* (the one-off stuff — a doctor's appointment, a midterm, a flight). Most calendars treat these the same way and force the user to either repeat events forever or copy-paste them manually. Meridian treats them as two distinct concepts that can be layered together, edited independently, and reasoned about by an AI — which turns out to be a much more flexible way to think about a schedule.
+
+---
+
+## The Home Screen
+
+Open Meridian and the first thing you see is a quiet, almost meditative home screen: a giant 72-point monospaced clock at the top, the name of whatever you're currently doing in your chosen accent color underneath it, and a soft countdown to the next thing on your schedule ("23 minutes until Gym"). If a Pomodoro session is running, its status sits inline — current task, work or break, time remaining, cycle number. A "NEXT UP" card previews the next block. Below the clock, a daily quote rotates from a library of more than 300 quotations — courage, success, wisdom, kindness, learning — seeded by the calendar date, so the same quote stays with you for the whole day and changes at midnight.
+
+Floating around this screen are *countdown cards* — draggable little widgets the user can scatter wherever they want on the home screen. Each card tracks the days remaining until something important: "Summer Break: 15 days left," "Finals: 6 days left." They can be dragged anywhere on the screen, but the app does something thoughtful: it actively avoids covering the clock or the activity name, treating those zones as forbidden regions and gently pushing cards aside if they're dropped on top. To delete one, you drag it to a trash zone in the bottom corner, which scales up and turns red as you approach. It's a small UX flourish, but it's a clear signal that the developer cared about the *feel* of the app, not just its function.
+
+---
+
+## The Schedule
+
+The Schedule tab is the largest part of Meridian, and it has two modes — Weekly and Calendar — that share data but show it through different lenses.
+
+In **Weekly Mode**, the screen is organized around a row of day tabs (Sunday through Saturday), with today highlighted by a ring in the accent color. Selecting a day brings up its blocks, displayed as a stack of rows with start/end times in a monospaced font, the activity name, and a preview of any notes. Whichever block is currently active gets a "NOW" badge and is rendered with extra visual weight; past blocks fade to 50% opacity. Editing is fast — there's a dedicated edit button per block, but blocks can also be Shift-clicked into bulk selections and copied between days. The keyboard shortcuts feel familiar to anyone who's used a Mac: Cmd+C, Cmd+V, Delete. A floating indicator appears whenever blocks are on the clipboard, reminding you what's pending.
+
+In **Calendar Mode**, the same data is rearranged into a traditional month grid. Each day cell shows previews of up to four blocks — activity names in their assigned color, start times — with a "+X more" badge if the day is overbooked. A resizable sidebar shows the selected date, the count of blocks on it, and shortcut buttons for copying and pasting days. There's also a "Today" button to jump back to the present, and a "Plan Your Week" flow for batch operations.
+
+That "Plan Your Week" wizard is one of Meridian's most thoughtful features. Instead of forcing the user to add events one at a time, it opens a three-stage process: first, edit a representative week of blocks in a compact mini-editor; second, pick which upcoming weeks (grouped by month, with checkbox selection per month) should receive that week's pattern; third, confirm. Behind the scenes, Meridian then *projects* that week's blocks across the chosen weeks as actual calendar blocks. It's the difference between writing a recurring event rule and authoring a finite, editable schedule the user can adjust week by week. The wizard pairs naturally with a *templates* system — the user can save the current week as a named template ("Summer Schedule," "Exam Prep"), then reuse it later in a click.
+
+When the user edits a recurring block from within Calendar Mode, the app asks an important question: *which occurrences?* It offers three options — this single occurrence (which silently converts the recurring entry into a one-time override), this whole week's occurrences (which generates a skip-marker), or all occurrences (which edits the underlying template). It's a small decision but it's the kind of detail that separates a tool that works *with* you from a tool that requires constant cleanup.
+
+There's also a custom color palette of **32 colors** — not Apple's defaults, but a carefully chosen set including Lavender, Sage, Rust, Crimson, Turquoise, Mint, Salmon — so users can color-code activities meaningfully (all "Gym" blocks purple, all "Study" blocks blue) without their schedule looking like every other app's calendar.
+
+---
+
+## Pomodoro
+
+The Pomodoro timer is a small, self-contained productivity loop inside the larger app. Setup is direct: name the task ("What are you working on?"), set work and break durations (defaulting to 25 and 5 minutes), choose the number of cycles (defaulting to 4). The app shows clear error states if the task name is blank or the durations are zero. Saved configurations can be stored as *presets* — a horizontally scrolling row of named templates ("Deep Work: 25m / 5m × 4," "Sprint: 50m / 10m × 3") that can be applied instantly.
+
+Once started, the timer takes over with a circular progress ring (accent color for work, green for break) that shrinks as time counts down. The center shows the mode (WORK or BREAK), the task name, and a giant monospaced countdown. Cycle progress is displayed beneath it ("Cycle 3 of 4"). The session can be paused, resumed, or ended at any time.
+
+Where Meridian's Pomodoro shines is in the notifications. They're not generic — they're written with personality:
+
+- **At start:** "Start doing [task] now! Cycle 1/4 — Stay focused 💪"
+- **At break:** "Take a break! Cycle 1/4 done — Relax for 5 minutes 😌"
+- **5 minutes before the final work session ends:** "5 minutes left — wrap it up! ⏰"
+- **At the end of the final work session:** "Work done — pack up! 🎒"
+- **When all cycles are complete:** "All done! Congrats! 🎉🥳"
+
+The state of the Pomodoro is persisted continuously to disk, so if the user quits the app or restarts the Mac, the timer picks up right where it left off. This is a small detail with outsized payoff — it means the user can trust the timer, which means they're more likely to actually use it.
+
+---
+
+## Reminders, Assignments, and Countdowns
+
+The Reminders and Assignments tab handles two related but distinct kinds of work: things that need to happen at a particular time (Reminders) and things that are due by a particular time (Assignments).
+
+**Reminders** are sortable by date and support four recurrence patterns: one-time, daily, weekly, monthly. Each reminder has a checkbox that completes it (a one-second delay before deletion gives the user a chance to undo), a recurrence badge, and an "OVERDUE" tag with day count if it's past due. Recurring reminders auto-reschedule themselves once fired — the user never has to manually re-create them.
+
+**Assignments** (homework) are a sibling concept: a title, an optional subject tag, a due date, and a configurable notification time (default 18:00 the day before). The list shows only unfinished assignments, sorted by due date, with badges for OVERDUE or TODAY. Each row has a "Do this" button that primes the Pomodoro timer with the assignment as the task — a small but useful bridge between planning and doing.
+
+**Countdowns**, mentioned earlier, are the third member of this family — but instead of triggering notifications, they live visually on the home screen as draggable cards. They're for the long-horizon things: trips, holidays, exams, deadlines. Their job is to be quietly visible.
+
+---
+
+## Theming, Typography, and the Onyx Mode
+
+Meridian has two visual themes: **Bright** and **Onyx**.
+
+Bright is a near-white interface (#F5F7FB background, white surfaces) with soft contrast and a clean, paperlike feel. Onyx is a deep dark mode (#0D0D12 background, #1A1A21 surfaces) tuned for low-light use and high text contrast. Users can lock the app to either theme, or switch on **Dynamic Mode**, which automatically transitions between them on a schedule the user defines (default: Onyx at 7 PM, Bright at 6 AM). The transition isn't a hard cut — it's a smooth 0.4-second ease-in-out animation, so the change feels intentional rather than abrupt.
+
+Layered on top of the themes is an **accent color** system: eight built-in colors (Blue, Sky, Green, Orange, Red, Purple, Pink, Teal), with the option to set any hex value via the AI chat. The accent color tints the activity name on the home screen, the active block ring, the Pomodoro work ring, and most other interactive elements.
+
+The typography is carefully tuned. The clock is 72-point ultralight monospaced. Activity names are 38-point semibold. Block times are 12-point medium monospaced. There's a **font scale slider** in Settings that ranges from 0.7× to 1.6× and applies globally to every text element in the app, accessible for users with vision needs or simply users who want the clock visible from across the room.
+
+---
+
+## The Menu Bar
+
+Meridian sits in the macOS menu bar as a status item. By default it shows a single inline string summarizing the current state of the app:
+
+> Current session: Study · 🍅 Pomodoro: work (22:05 left) · ⏰ Reminder: Call mom: 2h left
+
+It updates every second. The user can collapse it into a compact ⏰ icon if they want their menu bar to stay clean — on hover, a custom popover slides down with all the same information laid out vertically. The hover detection uses mouse polling at 80ms intervals to keep CPU use low while preserving a snappy feel, and the popover stays visible as long as the cursor is in either the icon or the popover itself, even while traversing the gap between them.
+
+Right-clicking (or click-and-hold) the menu bar item opens a quick menu: Add Schedule Block, Add Reminder, Add Assignment, and — if Pomodoro is running — Pause, Resume, or End. These are the most common actions, made accessible without ever opening the main app window.
+
+---
+
+## The AI Chat
+
+This is where Meridian becomes more than a scheduler. Pressing **Cmd+J** (or whichever letter the user has chosen) opens an AI chat panel — either as a sidebar inside the main window or as a floating, blurred-glass companion window. The AI sees the user's entire schedule context: the current time, day, and timezone; every recurring block; the past 30 days and all future calendar blocks; active countdowns, reminders, and pomodoro state; even the user's display preferences.
+
+What makes it powerful is what the AI is allowed to *do*. Meridian wires up structured action calling: the assistant can respond with fenced ` ```action ``` ` blocks containing JSON, and the app interprets them as commands. There are 18 supported actions, including:
+
+- `add_block`, `edit_block`, `delete_block` — manage weekly recurring blocks
+- `add_calendar_block`, `delete_calendar_block` — manage one-off events
+- `add_weekly_to_calendar` — project a weekly pattern across a date range
+- `add_countdown`, `delete_countdown` — manage countdown cards
+- `add_reminder`, `delete_reminder` — manage reminders
+- `start_pomodoro`, `pause_pomodoro`, `resume_pomodoro`, `end_pomodoro` — control the timer
+- `set_display_mode`, `set_accent_color`, `set_font_scale`, `set_timezone` — adjust app settings
+
+So the user can simply say *"plan my Monday with gym, work, and study"* and the AI will respond with three add_block actions, each of which appears in the chat as a pending confirmation card. Destructive actions (delete, edit) require explicit approval via an orange "✅ Confirm" button. If more than three confirmations are pending, an "Approve All" button appears for bulk approval. This gives the user a chance to inspect every action before it modifies their schedule — the AI suggests, but the user remains in control.
+
+Meridian supports eight different AI providers — Gemini (default), OpenAI, Anthropic, DeepSeek, Grok, Mistral, Groq, and Doubao — with model selection per provider. API keys are stored locally and managed per-provider via a dedicated key entry sheet with documentation links.
+
+---
+
+## Calendar Integration
+
+Meridian can import events from both **Apple Calendar** (via EventKit) and **Google Calendar** (via OAuth 2.0). Both flow through a unified three-stage import wizard: pick which events to import, edit them in a preview, and choose which weeks they should be projected onto. Apple Calendar access is read-only and respects the system's calendar permissions. Google Calendar uses a Cloudflare Worker as a token exchange proxy, listens on localhost:8080 for the OAuth redirect, and handles refresh-token renewal automatically.
+
+Imported events become *calendar blocks* — the same one-off block type the user creates manually — so they get treated identically in the rest of the app: they show up on the home screen, in the schedule, in the AI's context, and in the menu bar.
+
+---
+
+## Sleep, Wake, and the Quiet Background Logic
+
+Meridian includes a built-in sleep schedule. The user sets a bedtime and a wake time, and the app does two things: it automatically inserts a "Sleep" block onto every day's schedule (so the schedule reflects reality), and it sends two pre-bed notifications — one 10 minutes before bedtime ("Sleep in 10 mins 🌙") and one at bedtime itself.
+
+Quietly under the hood, the app does a lot of background work. Notifications are de-duplicated so the same alert doesn't fire twice. Each notification category (Pomodoro, Sleep, Schedule, Reminder, Homework) can independently be set to *notification* style (a normal banner) or *alarm* style (a looping system sound with a modal window the user has to dismiss). Recurring reminders re-schedule themselves automatically. Yesterday's countdowns auto-expire. The Pomodoro state persists across restarts. Carbon hotkeys are re-registered if the user changes them. The menu bar updates every second. The dynamic theme switches at the configured times.
+
+None of this is exposed as a setting the user has to manage — it just happens. That's the design philosophy of the app: surface what the user needs to see, hide what they don't.
+
+---
+
+## Under the Hood
+
+Meridian is a single Swift file: roughly ten thousand lines, mostly SwiftUI, with strategic AppKit where SwiftUI falls short (the menu bar, the floating chat window, the OAuth localhost server, the Carbon hotkey integration). It uses no third-party dependencies. Data is persisted as JSON files in `~/Library/Application Support/ScheduleApp/` — one file per entity type (schedule, calendar blocks, reminders, homework, countdowns, semesters, week templates, pomodoro presets, settings), all written atomically. There's no database, no migration layer, no ORM — just structured Codable types and a small `StorageManager` singleton.
+
+For performance, the app maintains an in-memory index that maps date strings to lists of calendar blocks, so date lookups are O(1) instead of scanning the full block list every time. Drag operations use SwiftUI's `GestureState` so they don't trigger full view re-renders. Timer-based updates run at 1-second granularity instead of continuous reactivity. These choices keep the app responsive even with thousands of blocks.
+
+The app integrates deeply with macOS frameworks: **SwiftUI** for the interface, **AppKit** for the menu bar and floating windows, **EventKit** for Apple Calendar, **UserNotifications** for alerts and alarms, **Carbon** for global hotkeys, **URLSession** for AI provider HTTP calls, and even raw **BSD sockets** for the Google OAuth localhost callback.
+
+---
+
+## What Meridian Is Really About
+
+Step back from the feature list and a picture emerges. Meridian is, at its core, a *control surface* for a student's week — but it's designed by someone who clearly understands that a good control surface needs more than buttons. It needs to feel quiet when there's nothing happening, alive when something is, and forgiving when the user makes a mistake. It needs to know the difference between routine and exception. It needs to make the common things easy and the destructive things deliberate. It needs to remember what the user told it.
+
+The features that stand out aren't the obvious ones — they're the small ones. The way a countdown card refuses to sit on top of the clock. The way the Pomodoro timer survives a Mac restart. The way the AI's destructive actions queue up for confirmation instead of just running. The way the daily quote is seeded by the date so it doesn't change while you're reading it. The way the dynamic theme transition takes 0.4 seconds instead of switching instantly. The way the "Plan Your Week" wizard projects a single week onto twelve future weeks at once. The way the menu bar text updates every second and collapses to a single icon when you want it out of the way.
+
+These details add up to something rare: a productivity app that feels like it was built by someone who actually uses it. Meridian isn't trying to be everything to everyone. It's trying to be one student's complete operating system for their week — a place where time, plans, focus, and reminders all live together, where an AI can help shape that week without taking it over, and where the visual experience stays calm enough to live with all day long.
+
+It's a 10,000-line essay in caring about the details.
+
+---
+
+## v1.2.0
+
+- Initial window now opens at the full visible screen size instead of a fixed small default.
+- Countdowns are now deleted by tapping the card to reveal a small "Delete" pill above it, replacing the old drag-to-trash icon.
+- Pomodoro page redesigned with a cleaner, more modern Apple-style look.
+- Replaced the left sidebar with a floating row of dots that morph along a subtle arc into labelled Liquid Glass pills on hover, with the hovered pill smoothly enlarging.
+
+---
+
+## v1.3.0
+
+- Redesigned all four in-app date pickers with a custom modern Apple-style mini calendar: smoothly rounded corners, today shown in blue text, selected day in a filled accent-color circle, animated month transitions. The compact variant pops the same calendar open in a popover.
+- Tightened the Weekly/Calendar mode toggle in the Calendar view sidebar so it matches the size and vertical position of its counterpart in the Weekly view.
+- Pomodoro page split into two halves — existing timer and setup UI live on the left, with a new rich text Notes panel on the right.
+- Notes panel features a font family picker pulling from every font installed on the user's Mac, a font size picker, bold / italic / underline toggles that glow blue when active, a four-way alignment segmented control, a Stamp button that inserts a timestamped marker, and a notes-written counter.
+- Notes can be exported as a Microsoft Word `.doc` file.
+- At every Pomodoro break, a notification asks how the user is feeling about the current task; tapping it opens a check-in modal with a 1–5 mood scale and a free text field. Check-ins are optional, non-blocking, and auto-dismiss when the break ends.
+- At the end of all cycles, a session-complete summary sheet appears asking what the user accomplished, with a live preview of a "trophy card" showing task name, total duration, cycles, notes count, mood timeline from all break check-ins, and the accomplishment quote.
+- The trophy card can be exported as a JPG via `ImageRenderer` (Save to disk or Share via the system share sheet).
+- Added a `ProcessInfo.beginActivity` wrapper with `.userInitiated` and `.latencyCritical` options around the Pomodoro session so macOS doesn't App-Nap the timer when the app sits in another desktop, is hidden, or backgrounded — keeps the countdown and notifications precise.
+
+---
+
+
+## v1.4.0
+
+- **Email detail view layout fixed** — the header strip ("< Back | Email") now appears as a compact 50px strip at the very top of the sheet rather than floating in the middle. Fixed by using a `Color.frame` base with `.overlay(alignment: .topLeading)` and hardcoded heights, bypassing a SwiftUI VStack centering bug on macOS 26.
+- **Email detail redesigned** — AI Reply Draft section moved to the top of the email view so it's immediately accessible. Generation is now manual-only (click Generate); the body loads without auto-consuming AI tokens.
+- **AI Reply Draft prompt field** — a text field below the "AI Reply Draft" header lets you type optional instructions before generating ("keep it short", "be firm but polite"). Instructions are appended to the AI prompt at generation time.
+- **AI Reply Draft multi-provider support** — the email reply generator now respects whichever AI provider is configured in Settings (Gemini, OpenAI, Claude, DeepSeek, Grok, Mistral, Groq, Doubao) instead of always hitting Gemini. Generation errors are now surfaced in red text instead of failing silently.
+- **AI chat can send email replies** — the AI chat now supports a `send_email` action. Ask the AI to reply to any email in your inbox and it will draft the reply in natural language, then show a blue confirmation card with a body preview and a "Send Reply" button. Clicking it calls GmailManager to actually send the reply. The inbox context now includes thread IDs so the AI can correctly thread replies.
+- **Desktop widgets** — three macOS Tahoe widgets ship in the new `MeridianWidgetsExtension.appex` and appear in the system widget gallery:
+  - *Pomodoro* (small) — live countdown ring with WORK/BREAK label, task name, and cycle progress; uses `Text(timerInterval:)` for a smooth per-second countdown without forcing per-second timeline reloads.
+  - *Current Session* (medium) — the active schedule block ("NOW") with time range and "ends in" countdown, plus a "NEXT UP" preview of the next block.
+  - *Homework & Reminders* (large) — pending reminders and assignments sorted by date, with overdue items called out in red with an "OVERDUE" badge.
+- **App Group snapshot pipeline** — the main app writes a `widget_snapshot.json` to the shared `group.com.david.meridian` container every second; the widget extension reads it via `WidgetSnapshotStore` and reloads its timeline at meaningful boundaries (pomodoro segment end, block end, next block start) instead of on a fixed interval.
+- **Widget build pipeline fixed** — `build.sh` now compiles the widget extension with `-Xlinker -e -Xlinker _NSExtensionMain` so the appex boots through Foundation's `NSExtensionMain` entry point. Without this, the system registered the widget but every chronod spawn crashed with `ExtensionFoundation` "Unrecognized extension type", so the widgets never showed up in the gallery despite the build technically succeeding.
+- **Accordion title bar** — the standard macOS title bar is replaced with a custom pop-out strip. In windowed mode the title bar is hidden entirely; hovering within 24pt of the top edge causes the window to grow upward by 28pt, revealing a Liquid Glass (`NSVisualEffectView`, `.titlebar` material) strip with the real traffic-light buttons. Moving the cursor away collapses it. Content never shifts — the SwiftUI host is pinned to a fixed baseline inside a `TitleBarContainer` so only the top edge of the window moves. In full-screen mode, standard macOS auto-hiding chrome is restored (traffic lights appear on cursor-to-ceiling as normal).
+
+## v1.6.0
+
+- **Local model support via Ollama** — Ollama is now a first-class AI provider alongside Gemini, OpenAI, Claude, and the rest. Select it in the AI provider sheet, type the name of any model you have pulled locally (`llama3.2`, `mistral`, `gemma3`, `qwen3:4b`, etc.), and all AI chat features — including the full action system — run entirely on-device with no API key and no data leaving the machine. Falls back to `llama3.2` if the model field is left blank.
+- **Reasoning model compatibility** — `<think>…</think>` blocks produced by reasoning models (Qwen3, DeepSeek-R1, and others) are now stripped from responses before they reach the action parser or the chat UI, preventing parse failures and keeping the conversation view clean.
+- **Widget debugger entitlement** — added `com.apple.security.get-task-allow` to the widget extension entitlements so Xcode can attach its debugger to the widget process during development. Stripped automatically in Release/Archive builds.
+
+## v1.7.0
+
+- **Notification sounds fixed** — notifications now reliably play their chosen sound. Three problems were fixed: (1) the sound picker was a system `Picker` that rendered invisibly against the app's custom-themed background, so it couldn't be selected — replaced with a themed `Menu` dropdown; (2) picks weren't being reproduced audibly; (3) the real cause — on some machines the system *alert-sound* channel (used by `NSSound`, Core Audio's `AudioServicesPlaySystemSound`, **and** the sound macOS attaches to a delivered `UNNotification`) truncates built-in `/System/Library/Sounds` files to a click, while the same files play full and clear through `afplay`. So Meridian now delivers notifications silently and plays the sound itself by spawning `afplay`, for the Settings preview, for delivered notifications, and for the looping alarm alike. Requires the unsandboxed build (`ENABLE_APP_SANDBOX = NO`) so `afplay` can read the system sounds.
+- **Test Notification button** — added alongside "Test Alarm" in Settings → Notifications to preview a real banner + sound end-to-end.
+- **No more overlapping block notifications** — for back-to-back blocks (no break), the current block's end time equals the next block's start time. The "Ending in 5 mins" suppression check used a strict `> end` comparison, so it never triggered in that exact case and you'd get an "Ending in 5 mins" banner immediately covered by the next block's "Coming up in 5 mins" banner. Changed to `>= end` so a block starting exactly when the current one ends counts as "next starts soon" — now only the "Coming up in 5 mins" notification fires.
+- **Redesigned alarm window** — alarm-style notifications no longer use the bare system `NSAlert` panel. They now show a themed card (light/dark + accent color) with a pulsing/ringing alarm icon, the title/message, and a full-width "Dismiss Alarm" button. Reminder alarms also get a "Delete Reminder" button, and the deadline-task "submit" alarm gets a "Complete" button.
+- **Per-category notification controls** — each notification category (Pomodoro, Sleep, Schedule, Reminders, …) now has an on/off switch in Settings in addition to its Notification/Alarm style. Pomodoro **pause/resume** notifications are now always a standard banner (never the alarm modal), regardless of the Pomodoro category's style.
+- **Tasks page** — assignments moved out of Reminders into a dedicated **Tasks** page (new sidebar item between Schedule and Pomodoro) with a checklist. Creating a task forks two ways: **① Plan a session** opens the schedule-block planner (Select Weeks supported); the resulting block appears in the Weekly/Calendar schedule, visually distinguished with a **"Do it"** button that jumps to Pomodoro with the task name filled and the cycle count suggested from the time left in the session (`round((sessionEnd − now) / (work + break))`, with a "make work/break shorter" warning when even the closest count overruns). Finishing a full pomodoro run — or deleting the session block — auto-completes the task. **② Duration + deadline** fires two alarm-only pops: at `deadline − (duration + 10 min)` ("start now") and at `deadline − 10 min` ("submit", with a Complete button). Completing a task checks it off and removes it after ~1s.
+
+## v1.8.3
+
+- **AI Assistant redesigned** — the chat now feels like a native, premium panel. The floating window is a borderless squircle (26pt continuous corners, hairline border, its own shadow) instead of a utility window; there's a close button in the header; the header buttons (saved chats, dock/undock, API key, clear, close) are uniform circular chips. The prompt bar is a fully rounded capsule with the send button embedded inside it, and it grows up to 5 lines — **Shift+Enter inserts a newline, Enter sends**. The empty state got a gradient sparkles medallion, a friendlier headline, and tappable capsule suggestion chips that fill the input.
+- **Saved chats sidebar** — a `sidebar.left` toggle in the header opens a chat-history sidebar with a New Chat button, one row per conversation (titled from the first message), tap-to-switch, and hover-to-delete. Conversations persist to `~/Library/Application Support/Meridian/ai_chats.json`, so chats survive app restarts (previously the chat wiped itself 60 seconds after closing). Opening the sidebar grows the floating window *outward* (leftward, animated) rather than squeezing the chat; the docked panel widens from 380 to 560.
+- **Streaming responses** — replies now render token-by-token as the model generates them, via real SSE streaming in a new `AIStreamClient` that speaks all three wire formats: Gemini (`streamGenerateContent?alt=sse`), Anthropic (`content_block_delta`), and OpenAI-compatible deltas (OpenAI, DeepSeek, Grok, Mistral, Groq, Doubao, Ollama). If a provider ignores the stream flag, the client falls back to parsing the whole body as a normal response.
+- **Stop button** — while the AI is generating, the send button becomes a stop button that cancels the network request. Partial text is kept in the chat and in conversation history, but actions are never executed from a half-finished response. Switching or clearing chats mid-generation abandons the stream entirely so a late reply can't land in the wrong conversation.
+- **Chat lag + double-send fixed** — markdown is now parsed once per message and cached (it used to re-parse every message on every keystroke); chat bubbles are `Equatable` so unchanged rows skip re-rendering; the input field keeps its text in its own view so typing no longer re-renders the message list. Double-sends are gone: the input uses `.onSubmit` (the old `onCommit` also fired on focus loss), clears the field *before* dispatching, and a 0.3s guard drops any duplicate submit.
+- **Floating chat re-themes live** — the standalone AI window used to snapshot the theme when opened, staying light after switching to Onyx until closed and reopened. Its root view now recomputes the theme from observed app state, so display-mode and accent changes apply instantly.
+- **Window can be shortened from the bottom edge again** — the accordion title bar's fixed-height baseline constraint out-prioritized AppKit's user-drag resize priority (510, `NSLayoutPriorityDragThatCanResizeWindow`), which silently blocked all vertical edge-drags while width resizing worked fine. The constraint now sits at priority 499, so drags win and the strip-reveal layout is unchanged.
+- **Title-bar hover zone extended** — the pop-out traffic-light strip's hot zone now reaches 40pt *above* the window top, so overshooting the edge while reaching for the resize arrows no longer collapses the strip and yanks the edge away from the cursor.
+- **Menu bar "Add Assignment" → "Add Task"** — the status-item menu entry now jumps to the Tasks page and opens the task-creation sheet (the same one as the + button, now driven by a shared `showTaskCreateSheet` app state so the menu can trigger it).
+- **`make_release.sh` architecture picker** — after the version prompt, the release script asks which Macs to build for: 1) Apple Silicon, 2) Intel, 3) Universal (default). It passes `ARCHS`/`ONLY_ACTIVE_ARCH=NO` to xcodebuild, names the DMG accordingly (`Meridian_v1.8.3_Universal.dmg`), and prints the actual CPU support via `lipo -archs` at the end.
+
+---
+## v1.9.0
+
+- **App-wide hover feedback** — every custom button in the app (~195 of them) now reacts to the mouse through a shared `HoverLightenStyle`: in Bright mode hovering darkens the button 10%, in Onyx it brightens 6%, and clicking changes nothing. The style reads the live theme, so flipping display modes flips the hover direction instantly. Buttons whose fills are too faint for the standard shift (the pomodoro − / + steppers, Inbox, Countdown, Save current, the calendar day copy/delete pair, the email Back button) run a 2.2× strength multiplier; the AI toggle and the notes Export button deepen their accent tint on hover instead. Tappable cards that aren't buttons (schedule block rows, the notes pickers) get the same treatment via a `HoverRowEffect` modifier, and the Weekly/Calendar view toggles show a soft gray area on the un-selected segment when hovered.
+- **Countdown cards are Liquid Glass pills** — the Home page countdowns swapped their flat card for a native macOS 26 `glassEffect` capsule that refracts the wallpaper, brightens and grows 4% on hover, and pins its color scheme to the app theme (dark system + Bright theme used to render an opaque gray blob). The whole pill is now clickable/draggable — hits used to register only on the text, which also made the tap-to-delete button appear unreliable.
+- **Real HTML email rendering** — opening an email from the Inbox now renders the actual `text/html` body in an embedded WebKit view: the sender's fonts, colors, layout, images (scaled to fit), and working links, which open in your default browser. The email window grew to 780×820 with a shorter header, scrolling works across the email (wheel events pass through to the page scroll), plain-text-only emails fall back to the old text view, and the AI reply draft still reads the plain-text version.
+- **Calendar quality-of-life** — copy a day once, paste it onto as many days as you like (the clipboard used to clear after one paste); pasting now *replaces* anything that overlaps the incoming blocks (one-time blocks are deleted, weekly blocks are skip-marked for just that date) instead of stacking duplicates. The month grid finally fills the window's full height (a hidden 100pt filler strip is gone), day cells render as many block chips as their height allows instead of a hardcoded 4 before "+N more", and the sidebar's + button floats in the bottom corner instead of hovering 90pt up.
+- **Pomodoro notes: AI in the assistant, not a purple button** — the purple AI button and its prompt bar are gone from Session Notes. Instead the main AI assistant gained an `add_pomodoro_note` action: ask it to jot something down and a timestamped note lands in the notes panel, whether or not the Pomodoro page is open (notes state is now a shared singleton, and closed-panel writes go straight into the stored RTF).
+- **Pomodoro notes toolbar rebuilt** — one row: font, size, B/I/U, alignment, Stamp, Export. The font-family picker is now a real button that pops a native menu — the old SwiftUI menu washed out the icon and frame colors, collapsed its own label, and only part of the chip was clickable. The size stepper got a divider between its up/down arrows, the alignment buttons got individual chip frames, the picker shows "System" consistently (it used to silently flip to the raw internal font name on first touch), and Stamp no longer wraps to two lines.
+- **Plan Your Week: Templates removed** — the sidebar is just Sun–Sat now; the Templates toggle, save-as-template, and template list are gone.
+
+## v1.10.0
+
+- **Widgets stopped going blank** — the "blank" widgets were never blank: macOS was falling back to `placeholder(in:)`, which returned invented sample data hardcoded to the stock blue accent, and then rendered it with placeholder redaction — so it came out as gray skeleton bars in the wrong color. The placeholder now returns your real last-known snapshot and all three widgets render `.unredacted()`, which makes the fallback indistinguishable from a normal render; the countdown even keeps ticking through it. A snapshot the widget can't decode now falls back to the last accent the app wrote (mirrored into the shared App Group defaults) instead of reverting to blue.
+- **Widget timelines stop expiring** — chronod's log showed the real cause behind the fallback: timelines were running `timelineExhausted` while reload requests came back `Throttling additional refresh request`, leaving nothing valid to draw. Timelines now default to a `.never` policy and only ask for a reload at a moment the content genuinely changes — a paused pomodoro holds a single entry forever, a running one ends on an entry sitting exactly on the segment end (so a denied reload shows a finished timer, not an empty box), the session widget carries three hours of minute entries, and the list widget wakes only at the next due date. Roughly an order of magnitude fewer reload requests.
+- **Widget performance** — one shared provider used to emit up to 1000 per-second entries for *every* widget, which is what made the Pomodoro widget lag and all three flash blank when a session started. Each widget now has its own cadence (the ring steps ~100 times per segment, the session widget lands on minute boundaries, the list redraws on change) and each entry carries only the data that widget actually draws. Reloads are split per widget kind, so a pomodoro tick no longer rebuilds all three, and the fingerprints that gate them now include block times and item text — edits that used to be missed entirely.
+- **Pomodoro ring drains instead of filling** — the widget ring now starts full and empties counterclockwise as the segment runs down, matching the ring in the app. It was inverted.
+- **Widgets appear in the gallery after an update** — the launch-time registration check only asked "is the extension registered?", and it always was; the stale part was chronod's cached widget list. It now also refreshes that cache once per installed build, keyed on the extension's build timestamp so rebuilding the same version number still counts. Once per install, never on an ordinary launch.
+- **Pause / resume show an in-app toast** — macOS was suppressing the notification banner while still letting the sound through, so pausing made a noise with nothing on screen. Meridian now draws its own notification strip: a floating panel in the top-right that fades in, dismisses itself after 3.5s, and — unlike the alarm window — never runs a modal session.
+- **No alarm when a session starts** — pressing Start no longer fires an alert; you're looking straight at the timer. Every later alarm is unchanged, including the one that pulls you back to work when a break ends.
+- **Presets start the session** — clicking a pomodoro preset now starts it immediately instead of only filling in the fields, using the preset's name as the task if you haven't typed one. Delete moved out of the chip's button, so removing a preset can't start a timer.
+- **Timers survive modal alarms** — every alarm window runs a modal session, and the app's timers were scheduled in the default run-loop mode, which doesn't fire during one. The pomodoro countdown, the widget snapshot, and the menu bar clock all froze for as long as an alarm sat on screen, silently drifting the session late. All three now run in `.common` mode.
+- **Menu bar hover** — the ⏰ hover panel now uses a hit area spanning the full height of the menu bar. The status button is a couple of points shorter than the bar, so a pointer slammed to the top edge of the screen landed above it and never registered.
+- **New Countdown text is visible in Onyx** — the title and description fields had their text color hardcoded to near-black, invisible against the dark field.
+
+## v1.10.1
+
+- **OAuth proxy no longer leaks a personal subdomain** — the Google auth proxy (a Cloudflare Worker that holds the client secret so it never ships in the app) lived on a `workers.dev` subdomain named after the developer. That name was hardcoded in the binary and sent on every Google sign-in. The Cloudflare account subdomain was renamed to a neutral one; the app now points at `scheduleapp-auth.meridian-app.workers.dev`. Nothing personal ships in the shipped binary's network calls anymore.
+- **Auth proxy is gated with a shared token** — the worker URL is public (it ships inside the app), so the `/exchange` and `/refresh` endpoints were callable by anyone who read the binary and could be used to burn the app's Google quota. Every call now carries an `X-App-Token` header that the Worker checks against its `APP_SHARED_SECRET` with a constant-time compare; anything without it gets a 401 before any Google request. This blocks automated abuse of the endpoint — the client secret itself was never reachable from the app to begin with.
