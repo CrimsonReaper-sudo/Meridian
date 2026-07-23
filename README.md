@@ -1,6 +1,6 @@
 # Meridian
 
-A macOS menu-bar app for scheduling, focus sessions, and countdowns — with home-screen widgets.
+A macOS app for scheduling, focus sessions, and countdowns — with home-screen widgets.
 
 **New here?** Read [**What is Meridian?**](whatismeridian.md) for the full tour.
 
