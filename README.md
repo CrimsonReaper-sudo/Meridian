@@ -2,6 +2,8 @@
 
 A macOS menu-bar app for scheduling, focus sessions, and countdowns — with home-screen widgets.
 
+**New here?** Read [**What is Meridian?**](whatismeridian.md) for the full tour.
+
 ## Download
 
 Grab the latest `.dmg` from [**Releases**](../../releases/latest).
@@ -30,6 +32,7 @@ Grab the latest `.dmg` from [**Releases**](../../releases/latest).
 - Optional Google Calendar and Gmail integration
 - AI-assisted notes
 
-## Changelog
+## About & Changelog
 
-See [CHANGELOG.md](CHANGELOG.md).
+- [What is Meridian?](whatismeridian.md) — full overview
+- [Changelog](CHANGELOG.md) — version history
