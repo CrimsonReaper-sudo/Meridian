@@ -102,3 +102,8 @@ Version history. For an overview of what the app is, see [whatismeridian.md](wha
 ## v1.10.2
 
 - **Email reply drafts respect your Ollama model** — general chat, pomodoro notes, and email replies all read the same AI provider and key, but the "AI Reply Draft" builder had its own copy of the request logic that mishandled Ollama: it ignored the model you picked (always requested the `llama3.2` default), passed the model name as a bogus `Authorization` header, and could falsely fail with "No API key configured" even though Ollama needs none. It now mirrors the chat exactly — uses your selected model and skips auth for local providers — so all three AI features behave identically across every provider, cloud or local.
+
+## v1.10.3
+
+- **The app no longer carries the developer's identity** — earlier builds were code-signed with an Apple Development certificate, which embeds the developer's email address, Apple Team ID, and full certificate authority chain into the app; anyone could read them with `codesign -dvvv`. This build is signed ad-hoc instead — an anonymous signature that reads `Signature=adhoc` / `TeamIdentifier=not set` and carries no personal identity. It still installs and runs on any Mac (the same one-time "Open Anyway" as before).
+- **App Group renamed off the Team ID** — the container the app and its widgets use to share data was named with the developer's Apple Team ID as its prefix, which put that Team ID into the app's entitlements. It's now a neutral `group.com.meridian.shared`, so nothing in the shipped app ties back to the developer's Apple account. The group only ever held a regenerated widget snapshot, so there's no data to migrate — the app rewrites it on first launch.
