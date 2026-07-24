@@ -118,3 +118,8 @@ Version history. For an overview of what the app is, see [whatismeridian.md](wha
 
 - **The last trace of the old name is gone** — v1.10.5 renamed the app's internal identifiers but still had to keep one reference to the old name, because the routine that carried your settings across needed it to know where to look. That routine has done its job and has been removed, so nothing anywhere in the app refers to the old identifier now.
 - **Upgrading from v1.10.4 or earlier?** Four things need setting up once more: your AI provider key, the Gmail connection, the homework list and the pomodoro timer's saved settings. Those were filed under the app's previous identifier and don't follow it to the new one. Everything else is untouched — your schedule, reminders, tasks, calendar blocks and AI chat history were never tied to the identifier and carry over exactly as they were.
+
+## v1.10.7
+
+- **Signed under the developer's own account** — Meridian is now code-signed by the account the project is published from, rather than the separate one set up earlier. Nothing changes in how the app behaves; it only affects whose certificate the app carries. macOS will still ask for the one-time approval on first launch.
+- **Widgets need re-adding once more** — the shared container the app and its widgets use is tied to the signing account, so changing accounts moves it. Any widget on your desktop or in Notification Center will go blank until you remove and re-add it. Nothing else is affected: your schedule, reminders, tasks, homework, AI keys, Gmail connection and chat history all stay exactly as they are.
